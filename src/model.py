@@ -24,7 +24,7 @@ class MiniCNN_1(nn.Module):
             ),  # 28,8>28,8|RF:7,J:1
             nn.ReLU(),
         )
-        self.pool_1 = nn.MaxPool2d(2, 2)  # 28,16>14,16|RF:8,J:2
+        self.pool_1 = nn.MaxPool2d(2, 2)  # 28,8>14,8|RF:8,J:2
         self.transition_1 = nn.Conv2d(
             in_channels=8, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
         )  # 14,8>14,4|RF:8,J:2
