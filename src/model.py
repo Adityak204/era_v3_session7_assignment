@@ -161,12 +161,12 @@ class MiniCNN_3(nn.Module):
         )
         self.pool_1 = nn.MaxPool2d(2, 2)  # 28,16>14,16|RF:8,J:2
         self.transition_1 = nn.Conv2d(
-            in_channels=16, out_channels=8, kernel_size=(1, 1), padding=0, bias=False
-        )  # 14,16>14,8|RF:8,J:2
+            in_channels=16, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
+        )  # 14,16>14,4|RF:8,J:2
         self.block_2 = nn.Sequential(
             nn.Conv2d(
-                in_channels=8, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
-            ),  # 14,8>14,8|RF:12,J:2
+                in_channels=4, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
+            ),  # 14,4>14,8|RF:12,J:2
             nn.BatchNorm2d(8),
             nn.ReLU(),
             nn.Conv2d(
@@ -190,9 +190,9 @@ class MiniCNN_3(nn.Module):
         )
         self.pool_2 = nn.MaxPool2d(2, 2)  # 14,16>7,16|RF:21,J:4
         self.transition_2 = nn.Conv2d(
-            in_channels=16, out_channels=3, kernel_size=(1, 1), padding=0, bias=False
-        )  # 14,16>7,3|RF:21,J:4
-        self.fc = nn.Linear(3 * 7 * 7, 10)  # 7,3>10
+            in_channels=16, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
+        )  # 14,16>7,4|RF:21,J:4
+        self.fc = nn.Linear(4 * 7 * 7, 10)  # 7,4>10
 
     def forward(self, x):
         x = self.block_1(x)
@@ -201,6 +201,6 @@ class MiniCNN_3(nn.Module):
         x = self.block_2(x)
         x = self.pool_2(x)
         x = self.transition_2(x)
-        x = x.view(-1, 3 * 7 * 7)
+        x = x.view(-1, 4 * 7 * 7)
         x = self.fc(x)
         return F.log_softmax(x, dim=-1)
