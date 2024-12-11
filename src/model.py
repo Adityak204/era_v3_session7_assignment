@@ -68,7 +68,7 @@ class MiniCNN_1(nn.Module):
         return F.log_softmax(x, dim=-1)
 
 
-## Increasing number of Params
+## Adding dropouts
 class MiniCNN_2(nn.Module):
     def __init__(self):
         super(MiniCNN_2, self).__init__()
@@ -82,21 +82,18 @@ class MiniCNN_2(nn.Module):
             ),  # 28,8>28,8|RF:5,J:1
             nn.ReLU(),
             nn.Conv2d(
-                in_channels=8,
-                out_channels=16,
-                kernel_size=(3, 3),
-                padding=1,
-                bias=False,
-            ),  # 28,8>28,16|RF:7,J:1
+                in_channels=8, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
+            ),  # 28,8>28,8|RF:7,J:1
             nn.ReLU(),
+            nn.Dropout(0.2),
         )
-        self.pool_1 = nn.MaxPool2d(2, 2)  # 28,16>14,16|RF:8,J:2
+        self.pool_1 = nn.MaxPool2d(2, 2)  # 28,8>14,8|RF 8,J:2
         self.transition_1 = nn.Conv2d(
-            in_channels=16, out_channels=8, kernel_size=(1, 1), padding=0, bias=False
-        )  # 14,16>14,8|RF:8,J:2
+            in_channels=8, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
+        )  # 14,8>14,4|RF:8,J:2
         self.block_2 = nn.Sequential(
             nn.Conv2d(
-                in_channels=8, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
+                in_channels=4, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
             ),  # 14,8>14,8|RF:12,J:2
             nn.ReLU(),
             nn.Conv2d(
@@ -105,7 +102,7 @@ class MiniCNN_2(nn.Module):
                 kernel_size=(3, 3),
                 padding=1,
                 bias=False,
-            ),  # 14,8>14,16|RF:16,J:2
+            ),  # 14,8>14,8|RF:16,J:2
             nn.ReLU(),
             nn.Conv2d(
                 in_channels=16,
@@ -113,14 +110,15 @@ class MiniCNN_2(nn.Module):
                 kernel_size=(3, 3),
                 padding=1,
                 bias=False,
-            ),  # 14,16>14,16|RF:20,J:2
+            ),  # 14,8>14,16|RF:20,J:2
             nn.ReLU(),
+            nn.Dropout(0.2),
         )
         self.pool_2 = nn.MaxPool2d(2, 2)  # 14,16>7,16|RF:21,J:4
         self.transition_2 = nn.Conv2d(
             in_channels=16, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
-        )  # 14,16>7,4|RF:21,J:4
-        self.fc = nn.Linear(4 * 7 * 7, 10)  # 7,4>10
+        )  # 14,32>7,32|RF:25,J:4
+        self.fc = nn.Linear(4 * 7 * 7, 10)
 
     def forward(self, x):
         x = self.block_1(x)
@@ -158,15 +156,16 @@ class MiniCNN_3(nn.Module):
             ),  # 28,8>28,16|RF:7,J:1
             nn.BatchNorm2d(16),
             nn.ReLU(),
+            nn.Dropout(0.15),
         )
         self.pool_1 = nn.MaxPool2d(2, 2)  # 28,16>14,16|RF:8,J:2
         self.transition_1 = nn.Conv2d(
             in_channels=16, out_channels=4, kernel_size=(1, 1), padding=0, bias=False
-        )  # 14,16>14,4|RF:8,J:2
+        )  # 14,16>14,8|RF:8,J:2
         self.block_2 = nn.Sequential(
             nn.Conv2d(
                 in_channels=4, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
-            ),  # 14,4>14,8|RF:12,J:2
+            ),  # 14,8>14,8|RF:12,J:2
             nn.BatchNorm2d(8),
             nn.ReLU(),
             nn.Conv2d(
@@ -187,6 +186,7 @@ class MiniCNN_3(nn.Module):
             ),  # 14,16>14,16|RF:20,J:2
             nn.BatchNorm2d(16),
             nn.ReLU(),
+            nn.Dropout(0.1),
         )
         self.pool_2 = nn.MaxPool2d(2, 2)  # 14,16>7,16|RF:21,J:4
         self.transition_2 = nn.Conv2d(
