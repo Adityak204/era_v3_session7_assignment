@@ -84,7 +84,7 @@ Non-trainable params: 0
 
 **Observation:** Image transformation really helped in increasing Test accuracy. Train accuracy has been impacted but it is not overfitting anymore.
 
-### 3. Final Model with Data Transformations
+### 3. Final Model with Data Transformations & Batch Normalization
 **Target:** Based on random test samples review, exp with data transformation to improve test accuracy
 
 **Model Architecture:**
@@ -130,7 +130,7 @@ Non-trainable params: 0
 
 **Observation:** Dropouts have decreased the gap between train and test accuracy significantly. But test accuracy is still far away from 99.4% threshold.
 
-## Training and Test Logs
+## Training and Test Logs - Final Model
 ```
 ********* Epoch = 1 *********
 loss=0.1862 batch_id=58: 100%|██████████| 59/59 [00:17<00:00,  3.36it/s]
